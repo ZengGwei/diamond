@@ -17,6 +17,11 @@
 		<param-value>60000</param-value>
 	</context-param>
 
+	<!-- 14400min=10day -->
+	<session-config>
+		<session-timeout>14400</session-timeout>
+	</session-config>
+
 	<listener>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
@@ -31,7 +36,7 @@
 		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
 		<init-param>
 			<param-name>encoding</param-name>
-			<param-value>GBK</param-value>
+			<param-value>UTF-8</param-value>
 		</init-param>
 	</filter>
 	<!-- 授权过滤器 -->
@@ -54,6 +59,11 @@
 		<filter-name>authorizationFilter</filter-name>
 		<url-pattern>/admin.do</url-pattern>
 	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>authorizationFilter</filter-name>
+		<url-pattern>/mysqlha/*</url-pattern>
+	</filter-mapping>
 	<!-- spring mvc -->
 	<servlet>
 		<servlet-name>diamond</servlet-name>
@@ -64,7 +74,7 @@
 	<servlet>
 		<servlet-name>ConfigServlet</servlet-name>
 		<servlet-class>com.taobao.diamond.server.controller.ConfigServlet</servlet-class>
-		<load-on-startup>-1</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<servlet-mapping>

@@ -79,30 +79,30 @@ public class NotifyService {
     /**
      * 通知配置信息改变
      * 
-     * @param id
+     * @param dataId
      */
-    public void notifyConfigInfoChange(String dataId, String group) {
-        Enumeration<?> enu = nodeProperties.propertyNames();
-        while (enu.hasMoreElements()) {
-            String address = (String) enu.nextElement();
-            if (address.contains(SystemConfig.LOCAL_IP)) {
-                continue;
+    public void notifyConfigInfoChange(String dataId, String group, String md5) {
+        Enumeration enu = this.nodeProperties.propertyNames();
+
+        while(enu.hasMoreElements()) {
+            String address = (String)enu.nextElement();
+            if (!address.contains(SystemConfig.LOCAL_IP)) {
+                String urlString = this.generateNotifyConfigInfoPath(dataId, group, address, md5);
+                String result = this.invokeURL(urlString);
+                log.info("通知节点" + address + "分组信息改变：" + result + ",请求URL：" + urlString);
             }
-            String urlString = generateNotifyConfigInfoPath(dataId, group, address);
-            final String result = invokeURL(urlString);
-            log.info("通知节点" + address + "分组信息改变：" + result);
         }
+
     }
 
-
-    String generateNotifyConfigInfoPath(String dataId, String group, String address) {
+    String generateNotifyConfigInfoPath(String dataId, String group, String address, String md5) {
         String specialUrl = this.nodeProperties.getProperty(address);
-        String urlString = PROTOCOL + address + URL_PREFIX;
-        // 如果有指定url，使用指定的url
+        String urlString = "http://" + address + "/diamond-server/notify.do";
         if (specialUrl != null && StringUtils.hasLength(specialUrl.trim())) {
             urlString = specialUrl;
         }
-        urlString += "?method=notifyConfigInfo&dataId=" + dataId + "&group=" + group;
+
+        urlString = urlString + "?method=notifyConfigInfo&dataId=" + dataId + "&group=" + group + "&md5=" + (org.apache.commons.lang.StringUtils.isBlank(md5) ? "" : md5);
         return urlString;
     }
 

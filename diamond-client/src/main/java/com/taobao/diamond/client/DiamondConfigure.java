@@ -17,7 +17,19 @@ import java.util.List;
 import com.taobao.diamond.common.Constants;
 import com.taobao.diamond.mockserver.MockServer;
 
-
+import com.taobao.diamond.utils.FileUtils;
+import com.taobao.diamond.utils.PropertiesUtils;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * Diamond客户端的配置信息
  * 
@@ -25,6 +37,10 @@ import com.taobao.diamond.mockserver.MockServer;
  * 
  */
 public class DiamondConfigure {
+
+    public static final String DIAMOND_DOMAIN_FILE;
+    public final String CONF_PATH = "conf/conf.properties";
+    private static final Log logger;
 
     private volatile int pollingIntervalTime = Constants.POLLING_INTERVAL_TIME;// 异步查询的间隔时间
     private volatile int onceTimeout = Constants.ONCE_TIMEOUT;// 获取对于一个DiamondServer所对应的查询一个DataID对应的配置信息的Timeout时间
@@ -51,6 +67,25 @@ public class DiamondConfigure {
 
     // 本地数据保存路径
     private String filePath;
+//    private String filePath = System.getProperty("user.home") + "/diamond";
+
+    private String serverPath;
+    private Boolean derectlyUseDiamondDomain = false;
+    private static final String DEFAULT_DIAMOND_DOMAINS = "diamond.sit.ds.gome.com.cn\n#diamond.uat.ds.gome.com.cn\n#diamond.pre.ds.gome.com.cn\n#diamond.live.ds.gome.com.cn\n#a.b.c";
+    private static final String PRODUCTION_DIAMOND_DOMAINS = "#diamond.sit.ds.gome.com.cn\n#diamond.uat.ds.gome.com.cn\n#diamond.pre.ds.gome.com.cn\n#diamond.live.ds.gome.com.cn\n#a.b.c";
+
+
+    static {
+        DIAMOND_DOMAIN_FILE = System.getProperty("user.home") + File.separator + ".diamond.domain";
+        logger = LogFactory.getLog(DiamondConfigure.class);
+    }
+
+    public void setDerectlyUseDiamondDomain(Boolean derectlyUseDiamondDomain) {
+        this.derectlyUseDiamondDomain = derectlyUseDiamondDomain;
+    }
+    public Boolean getDerectlyUseDiamondDomain() {
+        return this.derectlyUseDiamondDomain;
+    }
 
 
     public DiamondConfigure() {
@@ -60,9 +95,53 @@ public class DiamondConfigure {
 
         if (!dir.exists()) {
             throw new RuntimeException("创建diamond目录失败：" + filePath);
+        } else {
+            this.reloadConfigServerAddress();
+
+            try {
+                PropertiesUtils.setValueFromConf(this, "conf/conf.properties");
+            } catch (Exception var3) {
+                logger.error("setValueFromConf执行时报错.", var3);
+            }
+
         }
     }
+    private void reloadConfigServerAddress() {
+        String path = DIAMOND_DOMAIN_FILE;
 
+        try {
+            File file = new File(path);
+            if (!file.exists()) {
+                if (!SystemUtils.IS_OS_WINDOWS && !SystemUtils.IS_OS_MAC) {
+                    this.createDefaultFile(file, "#diamond.sit.ds.gome.com.cn\n#diamond.uat.ds.gome.com.cn\n#diamond.pre.ds.gome.com.cn\n#diamond.live.ds.gome.com.cn\n#a.b.c");
+                } else {
+                    this.createDefaultFile(file, "diamond.sit.ds.gome.com.cn\n#diamond.uat.ds.gome.com.cn\n#diamond.pre.ds.gome.com.cn\n#diamond.live.ds.gome.com.cn\n#a.b.c");
+                }
+            }
+
+            String fileContent = FileUtils.getFileContent(path);
+            String[] split = StringUtils.split(fileContent, "\n");
+            String[] var5 = split;
+            int var6 = split.length;
+
+            for(int var7 = 0; var7 < var6; ++var7) {
+                String domain = var5[var7];
+                if (domain.indexOf("#") != 0) {
+                    this.configServerAddress = domain;
+                }
+            }
+
+        } catch (IOException var9) {
+            throw new IllegalStateException("read file error,file path=" + path);
+        }
+    }
+    private void createDefaultFile(File file, String content) throws IOException {
+        file.createNewFile();
+        FileWriter fileWritter = new FileWriter(file, true);
+        BufferedWriter bufferWritter = new BufferedWriter(fileWritter);
+        bufferWritter.write(content);
+        bufferWritter.close();
+    }
 
     /**
      * 获取和同一个DiamondServer的最大连接数

@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
@@ -42,6 +43,7 @@ public class PersistService {
     private static final int QUERY_TIMEOUT = 2;
 
     private static final ConfigInfoRowMapper CONFIG_INFO_ROW_MAPPER = new ConfigInfoRowMapper();
+    private static final PersistService.ConfigInfoHistoryRowMapper CONFIG_INFO_HISTORY_ROW_MAPPER = new PersistService.ConfigInfoHistoryRowMapper();
 
     private static final class ConfigInfoRowMapper implements ParameterizedRowMapper<ConfigInfo> {
         public ConfigInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -120,6 +122,23 @@ public class PersistService {
             });
     }
 
+    public void addConfigInfoHistory(final ConfigInfo configInfo) {
+        final Timestamp time = TimeUtils.getCurrentTime();
+        this.jt.update("insert into config_info_history (data_id,group_id,content,md5,gmt_create,gmt_modified,memo) values(?,?,?,?,?,?,?)", new PreparedStatementSetter() {
+            public void setValues(PreparedStatement ps) throws SQLException {
+                int index = 1;
+                int var3 = index + 1;
+                ps.setString(index, configInfo.getDataId());
+                ps.setString(var3++, configInfo.getGroup());
+                ps.setString(var3++, configInfo.getContent());
+                ps.setString(var3++, configInfo.getMd5());
+                ps.setTimestamp(var3++, time);
+                ps.setTimestamp(var3++, time);
+                ps.setString(var3++, configInfo.getMemo());
+            }
+        });
+    }
+
 
     public void removeConfigInfo(final ConfigInfo configInfo) {
         this.jt.update("delete from config_info where data_id=? and group_id=?", new PreparedStatementSetter() {
@@ -172,6 +191,13 @@ public class PersistService {
             return null;
         }
     }
+    public ConfigInfo findConfigInfoHistory(long id) {
+        try {
+            return (ConfigInfo)this.jt.queryForObject("select id,data_id,group_id,content,md5,memo,gmt_create from config_info_history where id=?", new Object[]{id}, CONFIG_INFO_HISTORY_ROW_MAPPER);
+        } catch (EmptyResultDataAccessException var4) {
+            return null;
+        }
+    }
 
 
     public Page<ConfigInfo> findConfigInfoByDataId(final int pageNo, final int pageSize, final String dataId) {
@@ -179,6 +205,11 @@ public class PersistService {
         return helper.fetchPage(this.jt, "select count(id) from config_info where data_id=?",
             "select id,data_id,group_id,content,md5 from config_info where data_id=?", new Object[] { dataId }, pageNo,
             pageSize, CONFIG_INFO_ROW_MAPPER);
+    }
+
+    public Page<ConfigInfo> findConfigInfoHistoryByDataIdAndGroup(int pageNo, int pageSize, String dataId, String group) {
+        PaginationHelper<ConfigInfo> helper = new PaginationHelper();
+        return helper.fetchPage(this.jt, "select count(id) from config_info_history where data_id=? and group_id=? ", "select id,data_id,group_id,content,md5,memo,gmt_create from config_info_history where data_id=? and group_id=? order by gmt_create desc", new Object[]{dataId, group}, pageNo, pageSize, CONFIG_INFO_HISTORY_ROW_MAPPER);
     }
 
 
@@ -247,5 +278,38 @@ public class PersistService {
             return "%" + s + "%";
         }
     }
+
+    public List<ConfigInfo> getGroupConfigs() {
+        return this.jt.query("select * from config_info t where t.data_id like 'com.taobao.tddl.jdbc.group_V2.4.1_%'", CONFIG_INFO_ROW_MAPPER);
+    }
+
+    public List<ConfigInfo> getGroupConfigs(String groupId, String dbKey) {
+        String sql = " select * from config_info t where t.data_id like 'com.taobao.tddl.jdbc.group_V2.4.1_%' and t.group_id=? and t.content like concat('%',?,'%')";
+        return this.jt.query(sql, new Object[]{groupId, dbKey}, CONFIG_INFO_ROW_MAPPER);
+    }
+
+    public List<ConfigInfo> getAtomConfigs(String ip, String port) {
+        String sql = "select * from config_info t where t.data_id like 'com.taobao.tddl.atom.global.%' and t.content like concat('%',?,'%') and t.content like concat('%',?,'%')";
+        return this.jt.query(sql, new Object[]{ip, port}, CONFIG_INFO_ROW_MAPPER);
+    }
+
+    private static final class ConfigInfoHistoryRowMapper implements ParameterizedRowMapper<ConfigInfo> {
+        private ConfigInfoHistoryRowMapper() {
+        }
+
+        public ConfigInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ConfigInfo info = new ConfigInfo();
+            info.setId(rs.getLong("id"));
+            info.setDataId(rs.getString("data_id"));
+            info.setGroup(rs.getString("group_id"));
+            info.setContent(rs.getString("content"));
+            info.setMd5(rs.getString("md5"));
+//            info.setMemo(rs.getString("memo"));
+//            info.setGmtCreate(rs.getTimestamp("gmt_create"));
+            return info;
+        }
+    }
+
+
 
 }

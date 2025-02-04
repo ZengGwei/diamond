@@ -124,7 +124,7 @@ public interface DiamondManager {
     /**
      * 获取DiamondConfigure，一个JVM中所有的DiamondManager对应这一个DiamondConfigure
      * 
-     * @param diamondConfigure
+     * @param
      */
     public DiamondConfigure getDiamondConfigure();
 

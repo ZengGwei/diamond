@@ -96,7 +96,7 @@ public class ConfigService {
             this.contentMD5Cache.remove(generateMD5CacheKey(configInfo.getDataId(), configInfo.getGroup()));
             this.persistService.removeConfigInfo(configInfo);
             // 通知其他节点
-            this.notifyOtherNodes(configInfo.getDataId(), configInfo.getGroup());
+            this.notifyOtherNodes(configInfo.getDataId(), configInfo.getGroup(),null);
 
         }
         catch (Exception e) {
@@ -116,7 +116,7 @@ public class ConfigService {
             this.contentMD5Cache.put(generateMD5CacheKey(dataId, group), configInfo.getMd5());
             diskService.saveToDisk(configInfo);
             // 通知其他节点
-            this.notifyOtherNodes(dataId, group);
+            this.notifyOtherNodes(dataId, group,configInfo.getMd5());
         }
         catch (Exception e) {
             log.error("保存ConfigInfo失败", e);
@@ -142,7 +142,7 @@ public class ConfigService {
             this.contentMD5Cache.put(generateMD5CacheKey(dataId, group), configInfo.getMd5());
             diskService.saveToDisk(configInfo);
             // 通知其他节点
-            this.notifyOtherNodes(dataId, group);
+            this.notifyOtherNodes(dataId, group,configInfo.getMd5());
         }
         catch (Exception e) {
             log.error("保存ConfigInfo失败", e);
@@ -150,11 +150,29 @@ public class ConfigService {
         }
     }
 
+    public void updateConfigInfo(String dataId, String group, String content, String historyMemo) {
+        this.checkParameter(dataId, group, content);
+        ConfigInfo configInfo = new ConfigInfo(dataId, group, content);
+
+        try {
+            ConfigInfo oldConfigInfo = this.persistService.findConfigInfo(dataId, group);
+            oldConfigInfo.setMemo(historyMemo);
+            this.persistService.addConfigInfoHistory(oldConfigInfo);
+            this.persistService.updateConfigInfo(configInfo);
+            this.contentMD5Cache.put(this.generateMD5CacheKey(dataId, group), configInfo.getMd5());
+            this.diskService.saveToDisk(configInfo);
+            this.notifyOtherNodes(dataId, group, configInfo.getMd5());
+        } catch (Exception var7) {
+            log.error("保存ConfigInfo失败", var7);
+            throw new ConfigServiceException(var7);
+        }
+    }
+
 
     /**
      * 将配置信息从数据库加载到磁盘
      * 
-     * @param id
+     * @param dataId
      */
     public void loadConfigInfoToDisk(String dataId, String group) {
         try {
@@ -241,8 +259,8 @@ public class ConfigService {
     }
 
 
-    private void notifyOtherNodes(String dataId, String group) {
-        this.notifyService.notifyConfigInfoChange(dataId, group);
+    private void notifyOtherNodes(String dataId, String group, String md5) {
+        this.notifyService.notifyConfigInfoChange(dataId, group, md5);
     }
 
 

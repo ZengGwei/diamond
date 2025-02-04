@@ -18,6 +18,8 @@
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
 
 	<context:component-scan
-		base-package="com.taobao.diamond.server.controller,com.taobao.diamond.server.service" />
+		base-package="com.taobao.diamond.server" />
 
+
+	<context:property-placeholder location="classpath:config.properties"/>
 </beans>

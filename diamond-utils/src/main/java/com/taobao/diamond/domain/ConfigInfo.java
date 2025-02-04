@@ -11,6 +11,7 @@ package com.taobao.diamond.domain;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.Date;
 
 import com.taobao.diamond.md5.MD5;
 
@@ -30,7 +31,8 @@ public class ConfigInfo implements Serializable, Comparable<ConfigInfo> {
     private String group;
     private long id;
 
-
+    private String memo;
+    private Date gmtCreate;
     public ConfigInfo() {
 
     }
@@ -46,6 +48,14 @@ public class ConfigInfo implements Serializable, Comparable<ConfigInfo> {
         }
     }
 
+
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
 
     public long getId() {
         return id;
@@ -176,6 +186,13 @@ public class ConfigInfo implements Serializable, Comparable<ConfigInfo> {
         return true;
     }
 
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
 
     @Override
     public String toString() {

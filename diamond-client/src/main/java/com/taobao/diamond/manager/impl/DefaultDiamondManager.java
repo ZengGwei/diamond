@@ -61,6 +61,31 @@ public class DefaultDiamondManager implements DiamondManager {
 
     }
 
+    public DefaultDiamondManager(String group, String dataId, ManagerListener managerListener, String diamondServer) {
+        this.diamondSubscriber = null;
+//        this.managerListeners = new LinkedList();
+        this.dataId = dataId;
+        this.group = group;
+        this.diamondSubscriber = DiamondClientFactory.getSingletonDiamondSubscriber();
+        this.managerListeners.add(managerListener);
+        ((DefaultSubscriberListener)this.diamondSubscriber.getSubscriberListener()).addManagerListeners(this.dataId, this.group, this.managerListeners);
+        String[] s = diamondServer.split(",");
+        if (s != null && s.length > 0) {
+            String[] var6 = s;
+            int var7 = s.length;
+
+            for(int var8 = 0; var8 < var7; ++var8) {
+                String o = var6[var8];
+                if (o != null && !o.trim().equals("")) {
+                    this.diamondSubscriber.getDiamondConfigure().getDomainNameList().add(o.trim());
+                }
+            }
+        }
+
+        this.diamondSubscriber.addDataId(this.dataId, this.group);
+        this.diamondSubscriber.start();
+    }
+
 
     public DefaultDiamondManager(String dataId, List<ManagerListener> managerListenerList) {
         this(null, dataId, managerListenerList);

@@ -4,16 +4,29 @@
 	<parent>
 		<artifactId>diamond-all</artifactId>
 		<groupId>com.taobao.diamond</groupId>
-		<version>2.0.5.4.bbg-SNAPSHOT</version>
+		<version>2.0.5.4.fuyou-SNAPSHOT</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>diamond-server</artifactId>
-	<name>diamond-server v${project.version}</name>
+	<name>diamond-server</name>
 	<packaging>war</packaging>
 
 	<build>
 		<finalName>diamond-server</finalName>
+
+		<!-- 各环境资源文件的过虑器 -->
+		<filters>
+			<filter>src/main/filters/${env}.properties</filter>
+		</filters>
+		<!-- 资源文件目录,使用过虑器 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -23,6 +36,26 @@
 					<excludes>
 						<exclude>**/*.properties</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.10</version>
+				<configuration>
+					<contextPath>/diamond-server</contextPath>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<connectors>
+						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<port>80</port>
+							<maxIdleTime>60000</maxIdleTime>
+						</connector>
+					</connectors>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -73,6 +106,77 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>2.7.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>2.7.1</version>
+		</dependency>
 	</dependencies>
 
+	<!-- 不同的打包环境 -->
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<env>test</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>uat2</id>
+			<properties>
+				<env>uat2</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>pre1</id>
+			<properties>
+				<env>pre1</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>pre2</id>
+			<properties>
+				<env>pre2</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>liv1</id>
+			<properties>
+				<env>liv1</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>liv2</id>
+			<properties>
+				<env>liv2</env>
+			</properties>
+		</profile>
+	</profiles>
 </project>

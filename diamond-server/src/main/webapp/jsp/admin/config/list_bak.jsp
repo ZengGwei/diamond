@@ -44,14 +44,14 @@
     </p>
    <p align='center'>
      <c:if test="${page!=null}">
-      <table border='1' width="800">
+      <table border='2' width="90%"  style="border-collapse: collapse" >
           <tr>
-              <td>dataId</td>
-              <td>组名</td>
-              <td>操作</td>
+              <td width="50%">dataId</td>
+              <td width="20%">组名</td>
+              <td width="30%">操作</td>
           </tr>
-          <c:forEach items="${page.pageItems}" var="configInfo">
-            <tr>
+          <c:forEach items="${page.pageItems}" var="configInfo" varStatus="status">
+            <tr <c:if test="${status.index%3 == 0}">style="background-color: CCCCCC"</c:if> >
                <td name="tagDataID">
                   <c:out value="${configInfo.dataId}"/>
                </td>
@@ -71,24 +71,25 @@
                   <c:param name="method" value="notifyConfigInfo" />
                    <c:param name="group" value="${configInfo.group}" />
                   <c:param name="dataId" value="${configInfo.dataId}" />
+                  <c:param name="md5" value="${configInfo.md5}" />
               </c:url>
               <c:url var="previewUrl" value="/config.co" >
                   <c:param name="group" value="${configInfo.group}" />
                   <c:param name="dataId" value="${configInfo.dataId}" />
               </c:url>
-                <c:url var="showHistoryUrl" value="/admin.do" >
-                    <c:param name="method" value="showHistory" />
-                    <c:param name="group" value="${configInfo.group}" />
-                    <c:param name="dataId" value="${configInfo.dataId}" />
-                    <c:param name="pageSize" value="15" />
-                    <c:param name="pageNo" value="1" />
-                </c:url>
+              <c:url var="showHistoryUrl" value="/admin.do" >
+              	  <c:param name="method" value="showHistory" />
+                  <c:param name="group" value="${configInfo.group}" />
+                  <c:param name="dataId" value="${configInfo.dataId}" />
+                  <c:param name="pageSize" value="15" />
+                  <c:param name="pageNo" value="1" />
+              </c:url>
               <td>
-                 <a href="${getConfigInfoUrl}">编辑</a>&nbsp;&nbsp;&nbsp;
-                 <a href="${deleteConfigInfoUrl}" onclick="return confirmForDelete();">删除</a>&nbsp;&nbsp;&nbsp;
+                 <a href="${getConfigInfoUrl}">编辑</a>
+                 <a href="${deleteConfigInfoUrl}" onclick="return confirmForDelete();">删除</a>
                  <a href="${saveToDiskUrl}" target="_blank">保存磁盘</a>
                  <a href="${previewUrl}" target="_blank">预览</a>
-                  <a href="${showHistoryUrl}" target="_blank">历史</a>
+                 <a href="${showHistoryUrl}" target="_blank">历史</a>
               </td>
             </tr>
           </c:forEach>

@@ -38,7 +38,7 @@ public class Constants {
 
     public static String DAILY_DOMAINNAME = "d.e.f";
 
-    public static int DEFAULT_PORT = 8080;
+    public static int DEFAULT_PORT = 80;
 
     public static final String NULL = "";
 
@@ -73,12 +73,12 @@ public class Constants {
     public static final int RECV_WAIT_TIMEOUT = ONCE_TIMEOUT * 5;// 毫秒
 
     /** 获取数据的URI地址，如果不带ip，那么轮换使用ServerAddress中的地址请求 */
-    public static String HTTP_URI_FILE = "/url";
+    public static String HTTP_URI_FILE = "/diamond-server/config.co";
 
     /** 获取ServerAddress的配置uri */
-    public static String CONFIG_HTTP_URI_FILE = HTTP_URI_FILE;
+    public static String CONFIG_HTTP_URI_FILE = "/url";
     
-    public static String HTTP_URI_LOGIN = HTTP_URI_FILE;
+    public static String HTTP_URI_LOGIN = "/url";
 
     public static final String ENCODE = "UTF-8";
 
