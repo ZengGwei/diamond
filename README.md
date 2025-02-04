@@ -13,3 +13,10 @@ client使用
 ==
 * classpath:diamond.properties
  1. HTTP_URI_FILE=http://10.200.51.105:9900/diamond-server/config.co 配置获取dataId数据的url
+
+
+修改
+===
+* 升级到jdk1.8，修改字符UTF-8;
+* server添加了zk，添加了历史配置记录表config_info_history
+* Client 添加了配置conf
