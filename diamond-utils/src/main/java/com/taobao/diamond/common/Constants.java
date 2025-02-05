@@ -129,7 +129,7 @@ public class Constants {
 		if (!diamondFile.exists()) {
 			diamondFile.getParentFile().mkdirs();
 			try (OutputStream out = new FileOutputStream(diamondFile)) {
-				out.write("localhost".getBytes());
+				out.write("192.168.10.106".getBytes());
 			} catch (IOException e) {
 				throw new IllegalStateException(diamondFile.toString(), e);
 			}
