@@ -259,7 +259,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
     /**
      * 向DiamondServer请求dataId对应的配置信息，并将结果抛给客户的监听器
      * 
-     * @param dataId
+     * @param
      */
     private void receiveConfigInfo(final CacheData cacheData) {
         scheduledExecutor.execute(new Runnable() {
@@ -609,7 +609,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
 
             try {
                 int httpStatus = httpClient.executeMethod(httpMethod);
-
+                log.info("httpStatus:"+httpMethod);
                 switch (httpStatus) {
 
                 case SC_OK: {
@@ -818,7 +818,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
             waitTime += onceTimeOut;
 
             PostMethod postMethod = new PostMethod(Constants.HTTP_URI_FILE);
-
+            log.info("http url:"+Constants.HTTP_URI_FILE);
             postMethod.addParameter(Constants.PROBE_MODIFY_REQUEST, probeUpdateString);
 
             // 设置HttpMethod的参数
@@ -833,7 +833,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
                         this.diamondConfigure.getPort());
 
                 int httpStatus = httpClient.executeMethod(postMethod);
-
+                log.info("checkUpdateDataIds httpStatus:"+httpStatus);
                 switch (httpStatus) {
                 case SC_OK: {
                     Set<String> result = getUpdateDataIds(postMethod);
@@ -889,7 +889,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
     /**
      * 获取探测更新的DataID的请求字符串
      * 
-     * @param localModifySet
+     * @param
      * @return
      */
     private String getProbeUpdateString() {

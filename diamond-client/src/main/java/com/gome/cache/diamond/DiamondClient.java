@@ -30,5 +30,7 @@ public class DiamondClient {
         }, "192.168.10.106");
         String availableConfigureInfomation = manager.getAvailableConfigureInfomation(5000L);
         System.out.println("start config: " + availableConfigureInfomation);
+
+
     }
 }

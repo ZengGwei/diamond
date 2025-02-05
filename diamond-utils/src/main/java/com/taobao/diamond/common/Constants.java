@@ -38,7 +38,7 @@ public class Constants {
 
     public static String DAILY_DOMAINNAME = "d.e.f";
 
-    public static int DEFAULT_PORT = 80;
+    public static int DEFAULT_PORT = 8080;
 
     public static final String NULL = "";
 
