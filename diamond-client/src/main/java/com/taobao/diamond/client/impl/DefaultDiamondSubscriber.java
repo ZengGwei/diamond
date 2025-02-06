@@ -589,7 +589,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
         log.info("设定的获取配置数据的重试次数为：" + retryTimes);
         // 已经尝试过的次数
         int tryCount = 0;
-
+        int httpsocketimeout = 0;
         while (0 == timeout || timeout > waitTime) {
             // 尝试次数加1
             tryCount++;
@@ -606,6 +606,8 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
             HttpMethod httpMethod = new GetMethod(uri);
 
             configureHttpMethod(skipContentCache, cacheData, onceTimeOut, httpMethod);
+            HttpMethodParams params = httpMethod.getParams();
+            log.info("params:"+params.getSoTimeout());
 
             try {
                 int httpStatus = httpClient.executeMethod(httpMethod);
@@ -657,8 +659,9 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
                 httpMethod.releaseConnection();
             }
         }
-        throw new RuntimeException("获取ConfigureInfomation超时, DataID" + dataId + ", Group为：" + group + ",超时时间为："
-                + timeout);
+        throw new RuntimeException("获取修改过的DataID列表超时 "
+                + diamondConfigure.getDomainNameList().get(this.domainNamePos.get()) + ":"
+                + this.diamondConfigure.getPort() +uri+"?http.socket.timeout="+httpsocketimeout+", 超时时间为：" + timeout);
     }
 
 
