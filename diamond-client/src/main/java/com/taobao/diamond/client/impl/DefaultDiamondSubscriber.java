@@ -850,25 +850,22 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
                     rotateToNextDomain();
                 }
                 }
-            }
-            catch (HttpException e) {
+            } catch (HttpException e) {
                 log.error("获取配置信息Http异常", e);
                 rotateToNextDomain();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 log.error("获取配置信息IO异常", e);
                 rotateToNextDomain();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.error("未知异常", e);
                 rotateToNextDomain();
-            }
-            finally {
+            } finally {
                 postMethod.releaseConnection();
             }
         }
         throw new RuntimeException("获取修改过的DataID列表超时 "
-                + diamondConfigure.getDomainNameList().get(this.domainNamePos.get()) + ", 超时时间为：" + timeout);
+                + diamondConfigure.getDomainNameList().get(this.domainNamePos.get()) + ":"
+                + this.diamondConfigure.getPort() + Constants.HTTP_URI_FILE+", 超时时间为：" + timeout);
     }
 
 
