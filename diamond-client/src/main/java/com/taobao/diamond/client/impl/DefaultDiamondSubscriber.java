@@ -609,7 +609,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
 
             try {
                 int httpStatus = httpClient.executeMethod(httpMethod);
-                log.info("httpStatus:"+httpMethod);
+//                log.info("httpStatus:"+httpMethod);
                 switch (httpStatus) {
 
                 case SC_OK: {

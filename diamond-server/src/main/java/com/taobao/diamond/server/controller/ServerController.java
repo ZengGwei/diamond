@@ -33,7 +33,7 @@ public class ServerController {
     )
     @ResponseBody
     public void updateConfig(HttpServletRequest request, HttpServletResponse response, @RequestParam("dataId") String dataId, @RequestParam("group") String group, @RequestParam("content") String content, @RequestParam("historyMemo") String historyMemo) throws UnsupportedEncodingException {
-        response.setCharacterEncoding("UTF-8");
+
         String ip = request.getRemoteAddr();
         String host = request.getRemoteHost();
         log.info(">>>dataId=" + dataId + ",ip=" + ip + ",host=" + host + ",content=" + content);
@@ -48,7 +48,7 @@ public class ServerController {
     )
     @ResponseBody
     public void getConfigMd5(HttpServletRequest request, HttpServletResponse response, @RequestParam("dataId") String dataId, @RequestParam("group") String group) throws UnsupportedEncodingException {
-        response.setCharacterEncoding("UTF-8");
+
         String ip = request.getRemoteAddr();
         String host = request.getRemoteHost();
         log.info(">>>dataId=" + dataId + ",ip=" + ip + ",host=" + host);

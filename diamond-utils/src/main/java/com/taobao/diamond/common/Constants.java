@@ -66,9 +66,9 @@ public class Constants {
 
     public static final int POLLING_INTERVAL_TIME = 15;// 秒
 
-    public static final int ONCE_TIMEOUT = 2000;// 毫秒
+    public static final int ONCE_TIMEOUT = 5000;// 毫秒
 
-    public static final int CONN_TIMEOUT = 2000;// 毫秒
+    public static final int CONN_TIMEOUT = 5000;// 毫秒
 
     public static final int RECV_WAIT_TIMEOUT = ONCE_TIMEOUT * 5;// 毫秒
 
