@@ -818,7 +818,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
             waitTime += onceTimeOut;
 
             PostMethod postMethod = new PostMethod(Constants.HTTP_URI_FILE);
-            log.info("http url:"+Constants.HTTP_URI_FILE);
+//            log.info("http url:"+Constants.HTTP_URI_FILE);
             postMethod.addParameter(Constants.PROBE_MODIFY_REQUEST, probeUpdateString);
 
             // 设置HttpMethod的参数
@@ -833,7 +833,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
                         this.diamondConfigure.getPort());
 
                 int httpStatus = httpClient.executeMethod(postMethod);
-                log.info("checkUpdateDataIds httpStatus:"+httpStatus);
+//                log.info("checkUpdateDataIds httpStatus:"+httpStatus);
                 switch (httpStatus) {
                 case SC_OK: {
                     Set<String> result = getUpdateDataIds(postMethod);
