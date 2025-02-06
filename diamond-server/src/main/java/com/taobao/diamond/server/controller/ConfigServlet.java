@@ -76,20 +76,24 @@ public class ConfigServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String group = request.getParameter("group");
-        String dataId = request.getParameter("dataId");
+        try {
+            String group = request.getParameter("group");
+            String dataId = request.getParameter("dataId");
 
-        if (!StringUtils.hasLength(dataId)) {
-            throw new IllegalArgumentException("无效的 dataId: " + dataId);
-        }
+            if (!StringUtils.hasLength(dataId)) {
+                throw new IllegalArgumentException("无效的 dataId: " + dataId);
+            }
 
-        String page = this.configController.getConfig(request, response, dataId, group);
-        if (page.startsWith("forward:")) {
-            page = page.substring(8);
-            forward(request, response, page, "", "");
-        }
-        else {
-            forward(request, response, page, "/jsp/", ".jsp");
+            String page = this.configController.getConfig(request, response, dataId, group);
+            if (page.startsWith("forward:")) {
+                page = page.substring(8);
+                forward(request, response, page, "", "");
+            } else {
+                forward(request, response, page, "/jsp/", ".jsp");
+            }
+        } catch (IllegalArgumentException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("请求参数错误: " + e.getMessage());
         }
 
     }
