@@ -865,7 +865,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
         }
         throw new RuntimeException("获取修改过的DataID列表超时 "
                 + diamondConfigure.getDomainNameList().get(this.domainNamePos.get()) + ":"
-                + this.diamondConfigure.getPort() + Constants.HTTP_URI_FILE+", 超时时间为：" + timeout);
+                + this.diamondConfigure.getPort() + Constants.HTTP_URI_FILE+"/"+Constants.PROBE_MODIFY_REQUEST+"="+probeUpdateString+", 超时时间为：" + timeout);
     }
 
 
