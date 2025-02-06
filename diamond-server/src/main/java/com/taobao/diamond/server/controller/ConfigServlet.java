@@ -68,7 +68,7 @@ public class ConfigServlet extends HttpServlet {
             IOException {
         String probeModify = request.getParameter(Constants.PROBE_MODIFY_REQUEST);
         if (!StringUtils.hasLength(probeModify))
-            throw new IOException("无效的probeModify");
+            throw new IllegalArgumentException("无效的probeModify");
         String page = this.configController.getProbeModifyResult(request, response, probeModify);
         forward(request, response, page, "/jsp/", ".jsp");
     }
@@ -80,7 +80,7 @@ public class ConfigServlet extends HttpServlet {
         String dataId = request.getParameter("dataId");
 
         if (!StringUtils.hasLength(dataId)) {
-            throw new IOException("无效的dataId: " + dataId);
+            throw new IllegalArgumentException("无效的 dataId: " + dataId);
         }
 
         String page = this.configController.getConfig(request, response, dataId, group);
