@@ -778,7 +778,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
 
         // 设置HttpMethod的参数
         HttpMethodParams params = new HttpMethodParams();
-        params.setSoTimeout((int) onceTimeOut);
+//        params.setSoTimeout((int) onceTimeOut);
         // ///////////////////////
         httpMethod.setParams(params);
         httpClient.getHostConfiguration().setHost(diamondConfigure.getDomainNameList().get(this.domainNamePos.get()),
