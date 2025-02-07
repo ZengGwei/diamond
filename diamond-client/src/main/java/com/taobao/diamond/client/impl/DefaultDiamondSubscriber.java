@@ -771,11 +771,11 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
         }
 
         httpMethod.addRequestHeader(Constants.ACCEPT_ENCODING, "gzip,deflate");
-        httpMethod.addRequestHeader("Cookie","JSESSIONID="+ UUID.randomUUID().toString().replace("-",""));
+//        httpMethod.addRequestHeader("Cookie","JSESSIONID="+ UUID.randomUUID().toString().replace("-",""));
 
         // 设置HttpMethod的参数
         HttpMethodParams params = new HttpMethodParams();
-//        params.setSoTimeout((int) onceTimeOut);
+        params.setSoTimeout((int) 5000);
         // ///////////////////////
         httpMethod.setParams(params);
         httpClient.getHostConfiguration().setHost(diamondConfigure.getDomainNameList().get(this.domainNamePos.get()),

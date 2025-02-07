@@ -19,7 +19,7 @@ public class DiamondClient {
 
 
     public static void main(String[] str) {
-        DiamondManager manager = new DefaultDiamondManager("DEFAULT_GROUP", "test2131", new ManagerListener() {
+        DiamondManager manager = new DefaultDiamondManager("DEFAULT_GROUP", "microants.unit", new ManagerListener() {
             public void receiveConfigInfo(String configInfo) {
                 System.out.println("changed config: " + configInfo);
             }
