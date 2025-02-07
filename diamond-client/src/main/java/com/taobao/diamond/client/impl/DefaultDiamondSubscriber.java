@@ -18,12 +18,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -775,6 +771,7 @@ class DefaultDiamondSubscriber implements DiamondSubscriber {
         }
 
         httpMethod.addRequestHeader(Constants.ACCEPT_ENCODING, "gzip,deflate");
+        httpMethod.addRequestHeader("Cookie","JSESSIONID="+ UUID.randomUUID().toString().replace("-",""));
 
         // 设置HttpMethod的参数
         HttpMethodParams params = new HttpMethodParams();
